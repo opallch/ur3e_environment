@@ -1,0 +1,63 @@
+#VRML_SIM R2022a utf8
+
+PROTO UR3e_VGC10 [
+  field SFString   name            "UR3e_VGC10"       # any string
+  field SFVec3f    translation     0 0 0    # Is `Transform.translation`.
+  field SFRotation rotation        0 0 1 0
+] 
+{
+  UR3e {
+    translation IS translation
+    rotation IS rotation
+    toolSlot [
+      Solid {
+        translation 0 0.035 0
+        children [
+          Connector {
+            translation 0 0.06 0
+            rotation 1 0 0 -1.57
+            children [
+              DEF d15_cup Shape {
+                appearance Appearance {
+                  material Material {
+                    emissiveColor 0.658824 0.658824 0.658824
+                  }
+                }
+                geometry Cylinder {
+                  height 0.05
+                  radius 0.005
+                }
+              }
+            ]
+            name "d15 cup"
+            model "grip"
+            boundingObject USE d15_cup
+            physics Physics {
+              mass 0.2
+            }
+            type "active"
+            distanceTolerance 0.04
+          }
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.72549 0.72549 0.72549
+              roughness 1
+            }
+            geometry DEF VGC10 Box {
+              size 0.07 0.07 0.07
+            }
+          }
+        ]
+        name "VGC10 Gripper"
+        boundingObject USE VGC10
+        physics Physics {
+          mass 0.5
+          centerOfMass [
+            0 0 0
+          ]
+        }
+      }
+    ]
+    name IS name
+  }
+}
