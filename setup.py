@@ -16,7 +16,7 @@ data_files = [
         'controllers/ur_controller/writers.py'
     ]),
     ('share/' + package_name + '/launch', [
-        'launch/cocobots_launch.py',
+        'launch/ur3e_launch.py',
     ]),
     # ('share/' + package_name + '/libraries'),
     # ('share/' + package_name + '/plugins', [
@@ -25,16 +25,6 @@ data_files = [
     #     'plugins/robot_windows'
     # ]),
     ('share/' + package_name + '/protos', [
-        'protos/Board.proto',
-        'protos/cross_recess_screw_M10_L20.proto',
-        'protos/Hex_Nut_M15.proto',
-        'protos/Hex_Screw_M16.proto',
-        'protos/Plate.proto',
-        'protos/Rect_Nut_M16.proto',
-        'protos/Rect_Washer_M15.proto',
-        'protos/Round_Washer_M15.proto',
-        'protos/SocketHead_Screw_M16.proto',
-        'protos/Triang_Screw_M28.proto',
         'protos/UR3e_VGC10.proto'       
     ]),
     ('share/' + package_name + '/resource', [
@@ -73,7 +63,7 @@ setup(
     entry_points={
         'launch.frontend.launch_extension': ['launch_ros = launch_ros'],
         'console_scripts': [
-            'cocobots_driver = ur3e_environment.cocobots_driver:main',
+            'ur3e_driver = ur3e_environment.ur3e_driver:main',
         ]
     }
 )

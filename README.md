@@ -5,7 +5,7 @@ This repository consists of guidelines to setup ROS2 and Webots with a UR3e simu
 ## System requirements
 
 It is highly recommended to run Webots on a supported [GPU](https://www.cyberbotics.com/doc/guide/system-requirements), however, it can also work without a graphics card.
-For this, make sure you have, or update to the latest GPU drives from [here](https://www.nvidia.com/download/index.aspx).
+For this, make sure you have, or update to the latest GPU drives from [here](https://www.nvidia.com/download/index.aspx), and that your system has at least **OpenGL 3.3**.
 
 The following operating systems are supported:
 * Linux (preferred)
@@ -60,7 +60,7 @@ mkdir -p ur3e_utilities
 chown -R $USER:$USER /home/$USER/ur3e_utilities
 cd ur3e_utilities
 ```
-2. Git clone the [cocobots repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (ur3e_utilities):
+2. Git clone [this repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (ur3e_utilities):
 ```
 git clone https://github.com/ccbts/084_ccbts_utils.git
 ```
@@ -94,7 +94,7 @@ git clone git@github.com:opallch/ur3e_environment.git;
 cd ..;
 colcon build;
 source install/local_setup.bash;
-export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ccbts_environment/lib/python3.8/site-packages
+export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ur3e_environment/lib/python3.8/site-packages
 ```
 7. To launch the ur3e webots world:
 ```
@@ -134,7 +134,7 @@ mkdir -p cocobots_ws/src
 chown -R $USER:$USER /home/$USER/cocobots_ws
 cd cocobots_ws 
 ```
-2. Git clone the [cocobots repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (cocobots_ws):
+2. Git clone [this repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (cocobots_ws):
 ```
 git clone https://github.com/ccbts/084_ccbts_utils.git
 ```
@@ -158,7 +158,7 @@ git clone git@github.com:opallch/ur3e_environment.git;
 cd ..;
 colcon build;
 source install/local_setup.bash;
-export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ccbts_environment/lib/python3.8/site-packages
+export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ur3e_environment/lib/python3.8/site-packages
 ```
 7. Configure the Xserver following this [tutorial](https://techcommunity.microsoft.com/t5/windows-dev-appconsult/running-wsl-gui-apps-on-windows-10/ba-p/1493242) (First option: VcXsrv Windows X Server). To avoid having to export the DISPLAY every time that WSL is launched, you can include the command at the end of the /etc/bash.bashrc file:
 ```
@@ -201,7 +201,7 @@ mkdir -p ur3e_utilities
 chown -R $USER:$USER /home/$USER/ur3e_utilities
 cd ur3e_utilities
 ```
-2. Git clone the [cocobots repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (ur3e_utilities):
+2. Git clone [this repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (ur3e_utilities):
 ```
 git clone https://github.com/ccbts/084_ccbts_utils.git
 ```
@@ -225,7 +225,7 @@ git clone git@github.com:opallch/ur3e_environment.git;
 cd ..;
 colcon build;
 source install/local_setup.bash;
-export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ccbts_environment/lib/python3.8/site-packages
+export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ur3e_environment/lib/python3.8/site-packages
 ```
 7. To launch the ur3e webots world:
 ```
