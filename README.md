@@ -90,7 +90,7 @@ git clone https://github.com/ccbts/084_ccbts_utils.git
 6. By now, you already set up and can interact with ROS2 and Webots in docker. Inside the docker, install the rest repositories. Remember to source everytime you open a new terminal:
 ```
 cd cocobots_ws/src/;
-git clone git@github.com:opallch/ur3e_environment.git;
+git clone https://github.com/opallch/ur3e_environment.git
 cd ..;
 colcon build;
 source install/local_setup.bash;
@@ -154,7 +154,7 @@ source install/setup.bash
 6. By now, you already set up and can interact with ROS2 and Webots in docker. Inside the docker, install the rest repositories. Remember to source everytime you open a new terminal.
 ```
 cd src/;
-git clone git@github.com:opallch/ur3e_environment.git;
+git clone https://github.com/opallch/ur3e_environment.git
 cd ..;
 colcon build;
 source install/local_setup.bash;
@@ -221,7 +221,7 @@ chmod +x ./084_ccbts_utils/webots_ros2/setup_project_mac.sh;
 6. By now, you already set up and can interact with ROS2 and Webots in docker. Inside the docker, install the rest repositories. Remember to source everytime you open a new terminal.
 ```
 cd cocobots_ws/src/;
-git clone git@github.com:opallch/ur3e_environment.git;
+git clone https://github.com/opallch/ur3e_environment.git
 cd ..;
 colcon build;
 source install/local_setup.bash;
