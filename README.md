@@ -10,7 +10,7 @@ For this, make sure you have, or update to the latest GPU drives from [here](htt
 The following operating systems are supported:
 * Linux (preferred)
 * Windows through Windows Subsystem for Linux (WSL). To install WSL, follow these [guidelines](https://docs.microsoft.com/en-us/windows/wsl/install). A current limitation is that [nvidia-docker2](https://docs.nvidia.com/cuda/wsl-user-guide/index.html#known-limitations-for-linux-cuda-apps) for WSL is still under development and for that reason ROS2 and Webots can only be installed through docker without GPU support. For a GPU system a bash script will be provided instead of docker. 
-* Mac (currently doesn't work properly)
+* Mac (it doesn't work on some Macs due to limited support of OpenGL)
 
 <!-- ## Dependencies
 * For WSL, install [Docker](https://docs.docker.com/get-docker/) 
@@ -25,17 +25,16 @@ The following operating systems are supported:
 
 ## Installation guidelines
 
-This repository contains three options. 
-* **I. ROS2 Foxy - Webots on Ubuntu (with or without GPU)**
+This repository contains two options. 
+* **I. ROS2 Foxy - Webots on Ubuntu or Mac (with or without GPU)**
 * **II. ROS2 Foxy - Webots on WSL (with or without GPU)**
-* **III. ROS2 Foxy - Webots on Mac**
 
 Follow the one suitable for your System:
 
 
 <!-- </details> -->
 
-## I. ROS2 Foxy - Webots on Ubuntu (with or without GPU)
+## I. ROS2 Foxy - Webots on Ubuntu or Mac (with or without GPU)
 
 A ROS2 Foxy (docker) setup with all the required dependencies for this project (and it will be updated on the go), coupled with Webots simulator R2022a in a Ubuntu 20.04 environment. The setup may work with or without GPU (follow the corresponding guidelines). 
 
@@ -51,7 +50,12 @@ These tools will be installed in step 3. Ignore it if they are already installed
 * [docker](https://docs.docker.com/engine/install/ubuntu/) (and make sure is running)
 * [docker-compose](https://docs.docker.com/compose/install/)
 * [docker-nvidia2](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
-
+* Xserver
+  * For Mac: eg [XQuartz](https://www.xquartz.org/). To install and configure it, follow this [tutorial](https://affolter.net/running-a-docker-container-with-gui-on-mac-os/)
+  * For Ubuntu:
+  ```
+  xhost +local:*
+  ```
 ### Installation
 
 1. Open a terminal, navigate in the 'home' directory, and create a folder in which you will save the dockerfiles, eg "ur3e_utilities".
@@ -65,18 +69,29 @@ cd ur3e_utilities
 git clone https://github.com/ccbts/084_ccbts_utils.git
 ```
 3. Install the dependencies
-* If there is GPU on the system:
+* For Ubuntu with GPU:
   ```
   chmod +x ./084_ccbts_utils/webots_ros2/setup_project_ubuntu_gpu.sh;
   sudo bash ./084_ccbts_utils/webots_ros2/setup_project_ubuntu_gpu.sh
   ```
-* Otherwise:
+* For Ubuntu without GPU:
   ```
+  chmod +x ./084_ccbts_utils/webots_ros2/setup_project_ubuntu_nogpu.sh
   sudo bash ./084_ccbts_utils/webots_ros2/setup_project_ubuntu_nogpu.sh
   ```
+* For Mac:
+  ```
+  chmod +x ./084_ccbts_utils/webots_ros2/setup_project_mac.sh;
+  /bin/bash ./084_ccbts_utils/webots_ros2/setup_project_mac.sh
+  ```
 4. Build the docker:
+* With GPU:
   ```
   docker-compose -f 084_ccbts_utils/webots_ros2/compose-ubuntu.yaml build
+  ```
+* Without GPU:
+  ```
+  docker-compose -f 084_ccbts_utils/webots_ros2/compose-ubuntu-nogpu.yaml build
   ```
 5. Run the docker (May need "sudo"):
 * If there is GPU on the system:
@@ -85,7 +100,7 @@ git clone https://github.com/ccbts/084_ccbts_utils.git
   ```
 * Otherwise:
   ```
-  rocker --devices /dev/dri/card --x11 ros2_webots
+  docker run --rm -it --user=root -e DISPLAY -e TERM   -e QT_X11_NO_MITSHM=1  -v /tmp/.X11-unix:/tmp/.X11-unix   -v /etc/localtime:/etc/localtime:ro  ros2_webots
   ```
 6. By now, you already set up and can interact with ROS2 and Webots in docker. Inside the docker, install the rest repositories. Remember to source everytime you open a new terminal:
 ```
@@ -96,9 +111,45 @@ colcon build;
 source install/local_setup.bash;
 export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ur3e_environment/lib/python3.8/site-packages
 ```
-7. To launch the ur3e webots world:
+7. To launch the simulation, run this command, otherwise, to control the UR from ROS2, move to step 8 to install the drivers:
 ```
-ros2 launch ur3e_environment ur3e_launch.py
+ros2 launch ccbts_environment cocobots_launch.py
+```
+8. To manipulate the Universal Robot arm, install the UR driver. In the cocobots_ws directory run:
+```
+git clone -b foxy https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver.git src/Universal_Robots_ROS2_Driver
+vcs import src --skip-existing --input src/Universal_Robots_ROS2_Driver/Universal_Robots_ROS2_Driver.repos
+rosdep install --ignore-src --from-paths src -y -r
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
+```
+9. Install the moveit package and dependencies. In the cocobots_ws directory run:
+```
+vcs import src --skip-existing --input src/Universal_Robots_ROS2_Driver/MoveIt_Support.repos
+vcs import src --skip-existing --input src/moveit2/moveit2.repos
+rosdep install --ignore-src --from-paths src -y -r
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
+``` 
+10. Create the connection between the PC and the robot. Connect the PC with the ethernet cable of the UR. Then open Network Settings and create a new Wired (Ethernet) connection with these settings. You may want to name this new connection UR or something similar:
+```
+IPv4
+Manual
+Address: 192.168.1.101
+Netmask: 255.255.255.0
+Gateway: 192.168.1.1
+```
+11. Run the launch file that starts the robot driver and the controllers:
+```
+ros2 launch ur_bringup ur_control.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
+```
+12. Send some goal to the Joint Trajectory Controller by using a demo node from ros2_control_demos package by starting the following command in another terminal:
+```
+ros2 launch ur_bringup test_joint_trajectory_controller.launch.py
+```
+13. To test the driver with the example MoveIt-setup, first start the controllers with the command at [11] then start MoveIt.
+```
+ros2 launch ur_bringup ur_moveit.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
 ```
 
 
@@ -168,80 +219,56 @@ If webots still don't open even after the installation, then run
 ```
 echo "export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0" >> /home/$USER/.bashrc
 ```
-8. To launch the ur3e webots world:
+9. To launch the simulation, run this command, otherwise, to control the UR from ROS2, move to step 10 to install the drivers:
 ```
-ros2 launch ur3e_environment ur3e_launch.py
+ros2 launch ccbts_environment cocobots_launch.py
 ```
-
-
-<!-- </details> -->
-
-## III. ROS2 Foxy - Webots on Mac
-
-A ROS2 Foxy (docker) setup with all the required dependencies for this project (and it will be updated on the go), coupled with Webots simulator R2022a in a non-GPU Mac environment. 
-
-<!-- <details>
-  <summary>Click to expand!</summary>
-  
-## III. ROS2 + Webots without NVidia docker -->
-
-### Prerequisites
-
-* [docker](https://docs.docker.com/engine/install/ubuntu/) (and make sure is running)
-* [docker-compose](https://docs.docker.com/compose/install/)
-* [rocker](https://github.com/osrf/rocker)
-* Xserver, eg [XQuartz](https://www.xquartz.org/). To install and configure it, follow this [tutorial](https://affolter.net/running-a-docker-container-with-gui-on-mac-os/)
-
-### Installation
-
-1. Open a terminal, navigate in the 'home' directory, and create a folder "ur3e_utilities". This will be your workspace directory
-
+10. To manipulate the Universal Robot arm, install the UR driver. In the cocobots_ws directory run:
 ```
-mkdir -p ur3e_utilities
-chown -R $USER:$USER /home/$USER/ur3e_utilities
-cd ur3e_utilities
+git clone -b foxy https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver.git src/Universal_Robots_ROS2_Driver
+vcs import src --skip-existing --input src/Universal_Robots_ROS2_Driver/Universal_Robots_ROS2_Driver.repos
+rosdep install --ignore-src --from-paths src -y -r
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
 ```
-2. Git clone [this repository](https://github.com/ccbts/084_ccbts_utils) in the root of your workspace folder (ur3e_utilities):
+11. Install the moveit package and dependencies. In the cocobots_ws directory run:
 ```
-git clone https://github.com/ccbts/084_ccbts_utils.git
+vcs import src --skip-existing --input src/Universal_Robots_ROS2_Driver/MoveIt_Support.repos
+vcs import src --skip-existing --input src/moveit2/moveit2.repos
+rosdep install --ignore-src --from-paths src -y -r
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
+``` 
+12. Create the connection between the PC and the robot. Connect the PC with the ethernet cable of the UR. Then open Network Settings and create a new Wired (Ethernet) connection with these settings. You may want to name this new connection UR or something similar:
 ```
-3. Install the dependencies
+IPv4
+Manual
+Address: 192.168.1.101
+Netmask: 255.255.255.0
+Gateway: 192.168.1.1
 ```
-chmod +x ./084_ccbts_utils/webots_ros2/setup_project_mac.sh;
-/bin/bash ./084_ccbts_utils/webots_ros2/setup_project_mac.sh
+13. Run the launch file that starts the robot driver and the controllers:
 ```
-4. Build the docker:
-  ```
-  docker-compose -f 084_ccbts_utils/webots_ros2/compose-mac.yaml build
-  ```
-5. Run the docker (May need "sudo"):
-  ```
-  rocker --devices /dev/dri/card --x11 ros2_webots
-  ```
-6. By now, you already set up and can interact with ROS2 and Webots in docker. Inside the docker, install the rest repositories. Remember to source everytime you open a new terminal.
+ros2 launch ur_bringup ur_control.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
 ```
-cd cocobots_ws/src/;
-git clone https://github.com/opallch/ur3e_environment.git
-cd ..;
-colcon build;
-source install/local_setup.bash;
-export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ur3e_environment/lib/python3.8/site-packages
+14. Send some goal to the Joint Trajectory Controller by using a demo node from ros2_control_demos package by starting the following command in another terminal:
 ```
-7. To launch the ur3e webots world:
+ros2 launch ur_bringup test_joint_trajectory_controller.launch.py
 ```
-ros2 launch ur3e_environment ur3e_launch.py
+15. To test the driver with the example MoveIt-setup, first start the controllers with the command at [11] then start MoveIt.
+```
+ros2 launch ur_bringup ur_moveit.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
 ```
 
-<!-- </details> -->
 
 
 ## Troubleshooting
 1. Error: package not found
   * Make sure to run 'source install/setup.bash'
 2. Webots is not opening
-  * Make sure DISPLAY had been set correctly by "echo $DISPLAY"
+  * Make sure DISPLAY had been set correctly by "echo $DISPLAY", and that you have an X server running
 3. Could not load the Qt platform plugin “xcb” … even though it was found
-  * Xserver error. Make sure you ran all the steps of the tutorial ([Windows](https://techcommunity.microsoft.com/t5/windows-dev-appconsult/running-wsl-gui-apps-on-windows-10/ba-p/1493242), [Mac](https://affolter.net/running-a-docker-container-with-gui-on-mac-os/))for setting the Xserver, and that the DISPLAY variable has been set correctly
+  * Xserver error. Make sure you ran all the steps of the tutorial ([Windows](https://techcommunity.microsoft.com/t5/windows-dev-appconsult/running-wsl-gui-apps-on-windows-10/ba-p/1493242), [Mac](https://affolter.net/running-a-docker-container-with-gui-on-mac-os/)) for setting the Xserver, and that the DISPLAY variable has been set correctly
   * If running on MAC, try this before going through the tutorial
   ```
   socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"
@@ -254,7 +281,15 @@ ros2 launch ur3e_environment ur3e_launch.py
   ```
   export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
   ```
-
+4. If the GUI tools don’t work (like rviz):
+* Try using the environmental variable LIBGL_ALWAYS_INDIRECT:
+```
+export LIBGL_ALWAYS_INDIRECT=0
+```
+* ImportError: libQt5Core.so.5: cannot open shared object file: No such file or directory:
+```
+sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+```
 
 
 
