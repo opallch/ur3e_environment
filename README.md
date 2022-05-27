@@ -113,7 +113,7 @@ export PYTHONPATH=${PYTHONPATH}:/home/${USER}/cocobots_ws/install/ur3e_environme
 ```
 7. To launch the simulation, run this command, otherwise, to control the UR from ROS2, move to step 8 to install the drivers:
 ```
-ros2 launch ccbts_environment cocobots_launch.py
+ros2 launch ur3e_environment ur3e_launch.py
 ```
 8. To manipulate the Universal Robot arm, install the UR driver. In the cocobots_ws directory run:
 ```
@@ -131,23 +131,23 @@ rosdep install --ignore-src --from-paths src -y -r
 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 ``` 
-10. Create the connection between the PC and the robot. Connect the PC with the ethernet cable of the UR. Then open Network Settings and create a new Wired (Ethernet) connection with these settings. You may want to name this new connection UR or something similar:
+<!-- 10. Create the connection between the PC and the robot. Connect the PC with the ethernet cable of the UR. Then open Network Settings and create a new Wired (Ethernet) connection with these settings. You may want to name this new connection UR or something similar:
 ```
 IPv4
 Manual
 Address: 192.168.1.101
 Netmask: 255.255.255.0
 Gateway: 192.168.1.1
+``` -->
+10. To connect to the UR you have to be on the same network as the one of the lab (CL-Lab). Then run the launch file that starts the robot driver and the controllers:
 ```
-11. Run the launch file that starts the robot driver and the controllers:
+ros2 launch ur_bringup ur_control.launch.py ur_type:=ur3e robot_ip:=192.168.0.4 launch_rviz:=true
 ```
-ros2 launch ur_bringup ur_control.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
-```
-12. Send some goal to the Joint Trajectory Controller by using a demo node from ros2_control_demos package by starting the following command in another terminal:
+11. Send some goal to the Joint Trajectory Controller by using a demo node from ros2_control_demos package by starting the following command in another terminal:
 ```
 ros2 launch ur_bringup test_joint_trajectory_controller.launch.py
 ```
-13. To test the driver with the example MoveIt-setup, first start the controllers with the command at [11] then start MoveIt.
+12. To test the driver with the example MoveIt-setup, first start the controllers with the command at [11] then start MoveIt.
 ```
 ros2 launch ur_bringup ur_moveit.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
 ```
@@ -221,7 +221,7 @@ echo "export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0"
 ```
 9. To launch the simulation, run this command, otherwise, to control the UR from ROS2, move to step 10 to install the drivers:
 ```
-ros2 launch ccbts_environment cocobots_launch.py
+ros2 launch ur3e_environment ur3e_launch.py
 ```
 10. To manipulate the Universal Robot arm, install the UR driver. In the cocobots_ws directory run:
 ```
@@ -239,23 +239,23 @@ rosdep install --ignore-src --from-paths src -y -r
 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 ``` 
-12. Create the connection between the PC and the robot. Connect the PC with the ethernet cable of the UR. Then open Network Settings and create a new Wired (Ethernet) connection with these settings. You may want to name this new connection UR or something similar:
+<!-- 12. Create the connection between the PC and the robot. Connect the PC with the ethernet cable of the UR. Then open Network Settings and create a new Wired (Ethernet) connection with these settings. You may want to name this new connection UR or something similar:
 ```
 IPv4
 Manual
 Address: 192.168.1.101
 Netmask: 255.255.255.0
 Gateway: 192.168.1.1
+``` -->
+12. To connect to the UR you have to be on the same network as the one of the lab (CL-Lab). Then run the launch file that starts the robot driver and the controllers:
 ```
-13. Run the launch file that starts the robot driver and the controllers:
+ros2 launch ur_bringup ur_control.launch.py ur_type:=ur3e robot_ip:=192.168.0.4 launch_rviz:=true
 ```
-ros2 launch ur_bringup ur_control.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
-```
-14. Send some goal to the Joint Trajectory Controller by using a demo node from ros2_control_demos package by starting the following command in another terminal:
+13. Send some goal to the Joint Trajectory Controller by using a demo node from ros2_control_demos package by starting the following command in another terminal:
 ```
 ros2 launch ur_bringup test_joint_trajectory_controller.launch.py
 ```
-15. To test the driver with the example MoveIt-setup, first start the controllers with the command at [11] then start MoveIt.
+14. To test the driver with the example MoveIt-setup, first start the controllers with the command at [11] then start MoveIt.
 ```
 ros2 launch ur_bringup ur_moveit.launch.py ur_type:=ur3e robot_ip:=192.168.1.102 launch_rviz:=true
 ```
