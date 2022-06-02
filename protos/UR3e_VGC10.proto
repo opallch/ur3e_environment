@@ -9,8 +9,6 @@ PROTO UR3e_VGC10 [
   field SFBool     supervisor      FALSE
   field SFBool     synchronization TRUE
   field SFBool     selfCollision   TRUE
-  field MFNode     toolSlot        []
-  field SFBool     staticBase      TRUE
 ] 
 {
   UR3e {
@@ -40,7 +38,7 @@ PROTO UR3e_VGC10 [
             model "grip"
             boundingObject USE d15_cup
             physics Physics {
-              mass 0.2
+              mass -1
             }
             type "active"
             distanceTolerance 0.04
@@ -58,7 +56,7 @@ PROTO UR3e_VGC10 [
         name "VGC10 Gripper"
         boundingObject USE VGC10
         physics Physics {
-          mass 0.5
+          mass -1
           centerOfMass [
             0 0 0
           ]
@@ -66,5 +64,10 @@ PROTO UR3e_VGC10 [
       }
     ]
     name IS name
+    controller IS controller
+    controllerArgs IS controllerArgs
+    supervisor IS supervisor
+    synchronization IS synchronization
+    selfCollision IS selfCollision
   }
 }
