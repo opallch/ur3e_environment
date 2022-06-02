@@ -8,13 +8,13 @@ from setuptools import setup
 
 package_name = 'ur3e_environment'
 data_files = [
-    ('share/' + package_name + '/controllers/ur_controller', [
-        'controllers/ur_controller/coco.py',
-        'controllers/ur_controller/composer.py',
-        'controllers/ur_controller/ur_controller.py',
-        'controllers/ur_controller/spec.yml',
-        'controllers/ur_controller/writers.py'
-    ]),
+    # ('share/' + package_name + '/controllers/ur_controller', [
+    #     'controllers/ur_controller/coco.py',
+    #     'controllers/ur_controller/composer.py',
+    #     'controllers/ur_controller/ur_controller.py',
+    #     'controllers/ur_controller/spec.yml',
+    #     'controllers/ur_controller/writers.py'
+    # ]),
     ('share/' + package_name + '/launch', [
         'launch/ur3e_launch.py',
     ]),

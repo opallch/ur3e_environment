@@ -448,7 +448,16 @@ StraightStairs {
     }
   ]
 }
-Robot {
-  controller "ur_controller"
-  supervisor TRUE
+Transform {
+  children [
+    UR3e_VGC10 {
+      translation 0 0 0.705
+      rotation 0 0 1 -1.570796267678159
+      controller "<extern>"
+      supervisor TRUE
+      selfCollision FALSE
+    }
+    Desk {
+    }
+  ]
 }

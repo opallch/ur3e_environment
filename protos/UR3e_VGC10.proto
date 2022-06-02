@@ -4,6 +4,13 @@ PROTO UR3e_VGC10 [
   field SFString   name            "UR3e_VGC10"       # any string
   field SFVec3f    translation     0 0 0    # Is `Transform.translation`.
   field SFRotation rotation        0 0 1 0
+  field SFString   controller      "void"
+  field MFString   controllerArgs  []
+  field SFBool     supervisor      FALSE
+  field SFBool     synchronization TRUE
+  field SFBool     selfCollision   TRUE
+  field MFNode     toolSlot        []
+  field SFBool     staticBase      TRUE
 ] 
 {
   UR3e {
