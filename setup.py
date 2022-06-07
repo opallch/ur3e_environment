@@ -63,7 +63,7 @@ setup(
     entry_points={
         'launch.frontend.launch_extension': ['launch_ros = launch_ros'],
         'console_scripts': [
-            'ur3e_driver = ur3e_environment.ur3e_driver:main',
+            'ur_controller = ur3e_environment.ur_controller:main',
         ]
     }
 )
