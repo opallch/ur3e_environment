@@ -103,11 +103,11 @@ newgrp docker
 6. Run the docker (May need "sudo"). Remember you may need to run **xhost +local:docker** every time you run this command:
 * If there is GPU on the system:
   ```
-  docker run --gpus=all -it -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw ros2_webots
+  docker run --gpus=all -it -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw -p 50001-50003:50001-50003 ros2_webots
   ```
 * Otherwise:
   ```
-  docker run --rm -it --user=root -e DISPLAY -e TERM   -e QT_X11_NO_MITSHM=1  -v /tmp/.X11-unix:/tmp/.X11-unix   -v /etc/localtime:/etc/localtime:ro  ros2_webots
+  docker run --rm -it --user=root -e DISPLAY -e TERM   -e QT_X11_NO_MITSHM=1  -v /tmp/.X11-unix:/tmp/.X11-unix   -v /etc/localtime:/etc/localtime:ro  -p 50001-50003:50001-50003 ros2_webots
   ```
 7. By now, you already set up and can interact with ROS2 and Webots in docker. Inside the docker, install the rest repositories. Remember to source everytime you open a new terminal:
 ```
